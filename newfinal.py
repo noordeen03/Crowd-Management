@@ -8,20 +8,33 @@ import os
 # Use relative paths for cross-platform compatibility
 cascPath = os.path.join(os.path.dirname(__file__), "haarcascade_frontalface_default.xml")
 faceCascade = cv2.CascadeClassifier(cascPath)
+
+# Check if cascade classifier loaded successfully
+if faceCascade.empty():
+    print(f"Error: Could not load cascade classifier from {cascPath}")
+    sys.exit(1)
+
 log_file = os.path.join(os.path.dirname(__file__), 'webcam.log')
 log.basicConfig(filename=log_file, level=log.INFO)
 
 video_capture = cv2.VideoCapture(0)
+
+# Check if camera opened successfully
+if not video_capture.isOpened():
+    print("Error: Could not open camera")
+    sys.exit(1)
+
 anterior = 0
 
 while True:
-    if not video_capture.isOpened():
-        print('Unable to load camera.')
-        sleep(5)
-        pass
-
     # Capture frame-by-frame
     ret, frame = video_capture.read()
+
+    # Check if frame was captured successfully
+    if not ret:
+        print('Error: Failed to capture frame from camera')
+        sleep(1)
+        continue
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -44,16 +57,11 @@ while True:
         anterior = len(faces)
         log.info("faces: "+str(len(faces))+" at "+str(dt.datetime.now()))
 
-
     # Display the resulting frame
     cv2.imshow('Video', frame)
-
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
-    # Display the resulting frame
-    cv2.imshow('Video', frame)
 
 # When everything is done, release the capture
 video_capture.release()

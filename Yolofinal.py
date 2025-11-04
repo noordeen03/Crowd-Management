@@ -11,7 +11,18 @@ while i<2:
 
         cap = cv2.VideoCapture(0)
 
+        # Check if camera opened successfully
+        if not cap.isOpened():
+            print("Error: Could not open camera")
+            continue
+
         ret, frame = cap.read()
+
+        # Check if frame was captured successfully
+        if not ret:
+            print("Error: Failed to capture image from camera")
+            cap.release()
+            continue
 
         # Convert to RGB
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB);
@@ -50,6 +61,11 @@ while i<2:
         break
 
     # If an unknown exception occurs, print it and continue looping.
-    except:
-        print(sys.exc_info()[0])
+    except Exception as e:
+        print(f"Error occurred: {e}")
         continue
+
+    finally:
+        # Cleanup camera resources
+        if 'cap' in locals():
+            cap.release()

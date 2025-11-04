@@ -1,13 +1,32 @@
 import cv2
 import time
 import os
+import sys
 
 # Use relative path for cascade classifier
 cascade_path = os.path.join(os.path.dirname(__file__), 'haarcascade_frontalface_default.xml')
 face_cascade = cv2.CascadeClassifier(cascade_path)
-camera=cv2.VideoCapture(0)
+
+# Check if cascade classifier loaded successfully
+if face_cascade.empty():
+    print(f"Error: Could not load cascade classifier from {cascade_path}")
+    sys.exit(1)
+
+camera = cv2.VideoCapture(0)
+
+# Check if camera opened successfully
+if not camera.isOpened():
+    print("Error: Could not open camera")
+    sys.exit(1)
+
 for i in range(1):
-     return_valve,image=camera.read()
+     return_valve, image = camera.read()
+
+     # Check if frame was captured successfully
+     if not return_valve:
+         print("Error: Failed to capture image from camera")
+         camera.release()
+         sys.exit(1)
      # Create TrainingData directory if it doesn't exist
      training_dir = os.path.join(os.path.dirname(__file__), 'TrainingData')
      os.makedirs(training_dir, exist_ok=True)
