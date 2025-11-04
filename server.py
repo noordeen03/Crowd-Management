@@ -1,5 +1,10 @@
 from flask import Flask, url_for, send_from_directory, send_file
+import os
+
 app = Flask(__name__, static_url_path='')
+
+# Get the directory where this script is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @app.route("/")
 def hello():
@@ -7,23 +12,28 @@ def hello():
 
 @app.route('/predictions')
 def get_predictions():
-    return send_file('predictions.png', mimetype='image/png')
+    file_path = os.path.join(BASE_DIR, 'predictions.png')
+    return send_file(file_path, mimetype='image/png')
 
 @app.route('/cam')
 def get_cam():
-    return send_file('cam.png', mimetype='image/png')
+    file_path = os.path.join(BASE_DIR, 'cam.png')
+    return send_file(file_path, mimetype='image/png')
 
 @app.route('/log')
 def get_log():
-    return send_file('bar.txt')
+    file_path = os.path.join(BASE_DIR, 'bar.txt')
+    return send_file(file_path)
 
 @app.route('/bar')
 def get_bar():
-    return send_file('bar.txt')
+    file_path = os.path.join(BASE_DIR, 'bar.txt')
+    return send_file(file_path)
 
 @app.route('/restaurant')
 def get_restaurant():
-    return send_file('restaurant.txt')
+    file_path = os.path.join(BASE_DIR, 'restaurant.txt')
+    return send_file(file_path)
 
 if __name__ == "__main__":
     app.run()
